@@ -1,1 +1,1 @@
-# salon-reservation
+# Hair Salon Reservation System
