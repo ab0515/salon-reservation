@@ -1,5 +1,44 @@
+.container {
+	text-align: center;
+}
+
 .calendar-header {
+	display: flex;
+	justify-content: center;
 	font-size: 24px;
 	padding: 12px;
 	margin-top: 15px;
+}
+
+.days-row {
+	display: flex;
+	justify-content: center;
+}
+
+.days-column {
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+	padding: 12px;
+	margin-top: 20px;
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+}
+
+.week {
+	display: inline-flex;
+}
+
+.cell {
+	padding: 12px;
+	cursor: pointer;
+}
+
+.disabledCell {
+	color: gray;
+	cursor: default;
 }

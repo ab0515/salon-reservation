@@ -1,62 +1,132 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Calendar.css';
+import { Row, Col, Container } from 'react-bootstrap';
 
 const Calendar = () => {
-	const [curDate, setCurDate] = useState(new Date());
+	const [curDate, setCurDate] = useState({
+		date: new Date(),
+		month: new Date().getMonth(),
+		year: new Date().getFullYear()
+	});
 
 	useEffect(() => {
 	},[]);
 
 	const header = () => {
-		let monthName = curDate.toLocaleString('default', { month: 'long' });
-		let year = curDate.getFullYear();
+		let monthName = curDate.date.toLocaleString('default', { month: 'long' });
 
 		return (
 			<div className="calendar-header">
-				<div>{year} {monthName}</div>
+				<div>{curDate.year} {monthName}</div>
 			</div>
 		)
 	};
 
-	const calendarCell = (cellVal) => {
+	const daysOfWeek = () => {
+		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		const daysEl = [];
+
+		for (let i=0; i<7; i++) {
+			daysEl.push(
+				<Col className="days-column" key={i}>
+					{days[i].toUpperCase()}
+				</Col>
+			);
+		}
 		return (
-			<div className="calendar-cell">
-				{cellVal}
-			</div>
+			<Container>
+				<Row className="days-row">
+					{daysEl}
+				</Row>
+			</Container>
 		);
 	};
 
-	const calendarGrid = () => {
-		let d = new Date(curDate.getFullYear(), curDate.getMonth(), 32);
-		let d2 = new Date(curDate.getFullYear(), curDate.getMonth());
+	const daysInMonth = (year, month) => {
+		let d = new Date(year, month, 32);
+		return 32 - d.getDate();
+	}
 
-		let firstDay = d2.getDay();	// 0-6: Sun-Sat
-		let daysInMonth = 32 - d.getDate();
-		let date = 1;
+	const cells = () => {
+		const rows = [];
+		let nDays = daysInMonth(curDate.year, curDate.month)	// # of days in the current month
 
-		for (let i=0; i<6; i++) {
-			if (date <= daysInMonth) {
-				for (let j=0; j<7; j++) {
-					if (i === 0 && j < firstDay) {
-						return (
-							<div className="empty"></div>
-						);
-					} else {
-						return (
-							<div>
-								{calendarCell(date)}
-							</div>
-						);
-						date++;
-					}
-				}
+		let d2 = new Date(curDate.year, curDate.month);
+		let firstDay = d2.getDay();		// 1st day of the current month
+
+		let days = [];
+
+		if (firstDay > 0) {
+			let prevMonth = curDate.month === 0 ? 11 : curDate.month - 1;
+			let prevYear = curDate.month === 0 ? curDate.year - 1 : curDate.year;
+
+			let prevNDays = daysInMonth(prevYear, prevMonth);
+			
+			for (let i=0; i<firstDay; i++) {
+				days.push(
+					<Col className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
+						{prevNDays - (firstDay-1-i)}
+					</Col>
+				);
 			}
 		}
-	};
+
+		let date = 1;
+		let row = 0;
+		// while (date <= nDays) {
+		// 	for (let i=days.length; i<7; i++) {
+		// 		days.push(
+		// 			<Col className={`cell activeCell`} key={date}>
+		// 				{date}
+		// 			</Col>
+		// 		);
+		// 		date++;
+		// 	}
+		// 	rows.push(
+		// 		<Row className="week" key={row}>
+		// 			{days}
+		// 		</Row>
+		// 	);
+		// 	row++;
+		// 	days = [];
+		// }
+		let nextMonthDates = 1;
+		for (let i=0; i<6; i++) {
+			for (let j=days.length; j<7; j++) {
+				if (date <= nDays) {
+					days.push(
+						<Col className={`cell activeCell`} key={date}>
+							{date}
+						</Col>
+					);
+					date++;
+				} else {
+					days.push(
+						<Col className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
+							{nextMonthDates}
+						</Col>
+					);
+					nextMonthDates++;
+				}
+			}
+			rows.push(
+				<Row className="week" key={row}>
+					{days}
+				</Row>
+			);
+			row++;
+			days = [];
+		}
+
+		return <Container className="body">{rows}</Container>;
+	}
+
 
 	return (
 		<div className="calendar">
 			<div>{header()}</div>
+			<div>{daysOfWeek()}</div>
+			<div>{cells()}</div>
 		</div>
 	);
 };
