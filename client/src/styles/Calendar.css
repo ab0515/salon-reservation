@@ -1,5 +1,5 @@
 .container {
-	text-align: center;
+	text-align: right;
 }
 
 .calendar-header {
@@ -41,4 +41,42 @@
 .disabledCell {
 	color: gray;
 	cursor: default;
+}
+
+.btn-no-border {
+	color: #000;
+
+}
+
+.disabledCell span {
+	padding-right: 5px;
+}
+
+th, td {
+	text-align: right;
+}
+
+table > tbody > tr > td {
+	height: 90px;
+}
+
+table.curMonth-calendar {
+	table-layout: fixed;
+}
+
+.today {
+	background-color: lightsalmon;
+	font-weight: bold;
+}
+
+.pastDateCell {
+	background-color: lightgray;
+	cursor: not-allowed;
+}
+
+.todayMark {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: 1px solid red;
 }

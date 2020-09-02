@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Calendar.css';
-import { Row, Col, Container } from 'react-bootstrap';
+import { Row, Col, Container, Table } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Calendar = () => {
 	const [curDate, setCurDate] = useState({
@@ -12,33 +14,63 @@ const Calendar = () => {
 	useEffect(() => {
 	},[]);
 
-	const header = () => {
+	const handleNextMonth = () => {
+		setCurDate({
+			date: new Date(curDate.year, curDate.month+1),
+			month: new Date(curDate.year, curDate.month+1).getMonth(),
+			year: new Date(curDate.year, curDate.month+1).getFullYear()
+		});
+	};
+
+	const handlePrevMonth = () => {
+		setCurDate({
+			date: new Date(curDate.year, curDate.month-1),
+			month: new Date(curDate.year, curDate.month-1).getMonth(),
+			year: new Date(curDate.year, curDate.month-1).getFullYear()
+		});
+	};
+
+	const handleCell = () => {
+		console.log('cell clicked');
+	};
+
+	const Header = () => {
 		let monthName = curDate.date.toLocaleString('default', { month: 'long' });
 
 		return (
 			<div className="calendar-header">
+				<Button variant="no-border" onClick={handlePrevMonth}><MdKeyboardArrowLeft /></Button>
 				<div>{curDate.year} {monthName}</div>
+				<Button variant="no-border" onClick={handleNextMonth}><MdKeyboardArrowRight /></Button>
 			</div>
 		)
 	};
 
-	const daysOfWeek = () => {
+	const DaysOfWeek = () => {
 		const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 		const daysEl = [];
 
 		for (let i=0; i<7; i++) {
 			daysEl.push(
-				<Col className="days-column" key={i}>
+				// <Col className="days-column" key={i}>
+				// 	{days[i].toUpperCase()}
+				// </Col>
+				<th className="days-column" key={i}>
 					{days[i].toUpperCase()}
-				</Col>
+				</th>
 			);
 		}
 		return (
-			<Container>
-				<Row className="days-row">
+			// <Container>
+			// 	<Row className="days-row">
+			// 		{daysEl}
+			// 	</Row>
+			// </Container>
+			<thead>
+				<tr>
 					{daysEl}
-				</Row>
-			</Container>
+				</tr>
+			</thead>
 		);
 	};
 
@@ -47,7 +79,7 @@ const Calendar = () => {
 		return 32 - d.getDate();
 	}
 
-	const cells = () => {
+	const Cells = () => {
 		const rows = [];
 		let nDays = daysInMonth(curDate.year, curDate.month)	// # of days in the current month
 
@@ -64,69 +96,74 @@ const Calendar = () => {
 			
 			for (let i=0; i<firstDay; i++) {
 				days.push(
-					<Col className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
+					// <Col className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
+					// 	{prevNDays - (firstDay-1-i)}
+					// </Col>
+					<td className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
 						{prevNDays - (firstDay-1-i)}
-					</Col>
+					</td>
 				);
 			}
 		}
 
 		let date = 1;
 		let row = 0;
-		// while (date <= nDays) {
-		// 	for (let i=days.length; i<7; i++) {
-		// 		days.push(
-		// 			<Col className={`cell activeCell`} key={date}>
-		// 				{date}
-		// 			</Col>
-		// 		);
-		// 		date++;
-		// 	}
-		// 	rows.push(
-		// 		<Row className="week" key={row}>
-		// 			{days}
-		// 		</Row>
-		// 	);
-		// 	row++;
-		// 	days = [];
-		// }
 		let nextMonthDates = 1;
+
 		for (let i=0; i<6; i++) {
 			for (let j=days.length; j<7; j++) {
 				if (date <= nDays) {
 					days.push(
-						<Col className={`cell activeCell`} key={date}>
+						// <Col className={`cell activeCell`} key={date}>
+						// 	{date}
+						// </Col>
+						<td className={`cell ${curDate.date.getDate() > date ? 'pastDateCell' : 'activeCell'} ${curDate.date.getDate() === date ? 'today' : ''}`} 
+							key={date}
+							onClick={handleCell}
+						>
 							{date}
-						</Col>
+						</td>
 					);
 					date++;
 				} else {
+					let nextMonth = new Date(curDate.year, curDate.month+1);
 					days.push(
-						<Col className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
-							{nextMonthDates}
-						</Col>
+						// <Col className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
+						// 	<span>{nextMonthDates === 1 ? nextMonth.toLocaleString('default', { month: 'short' }) : ''}</span> {nextMonthDates}
+						// </Col>
+						<td className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
+							<span>{nextMonthDates === 1 ? nextMonth.toLocaleString('default', { month: 'short' }) : ''}</span> {nextMonthDates}
+						</td>
 					);
 					nextMonthDates++;
 				}
 			}
 			rows.push(
-				<Row className="week" key={row}>
+				// <Row className="week" key={row}>
+				// 	{days}
+				// </Row>
+
+				<tr key={row}>
 					{days}
-				</Row>
+				</tr>
 			);
 			row++;
 			days = [];
 		}
 
-		return <Container className="body">{rows}</Container>;
+		// return <Container className="body">{rows}</Container>;
+		return <tbody>{rows}</tbody>;
 	}
 
 
 	return (
 		<div className="calendar">
-			<div>{header()}</div>
-			<div>{daysOfWeek()}</div>
-			<div>{cells()}</div>
+			<h5>Book your appointment</h5>
+			<Header />
+			<Table className="curMonth-calendar" bordered>
+				<DaysOfWeek />
+				<Cells />
+			</Table>
 		</div>
 	);
 };
