@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Calendar.css';
+import TimeSlot from './TimeSlot';
 import { Row, Col, Container, Table } from 'react-bootstrap';
-import { Button } from 'react-bootstrap';
+import { Button, Modal, Toast } from 'react-bootstrap';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Calendar = () => {
@@ -11,8 +12,8 @@ const Calendar = () => {
 		year: new Date().getFullYear()
 	});
 
-	useEffect(() => {
-	},[]);
+	const [show, setShow] = useState(false);
+	const [reserved, setReserved] = useState(false);
 
 	const handleNextMonth = () => {
 		setCurDate({
@@ -31,7 +32,17 @@ const Calendar = () => {
 	};
 
 	const handleCell = () => {
-		console.log('cell clicked');
+		setShow(true);
+	};
+
+	const handleClose = () => {
+		setShow(false);
+	};
+
+	const handleReserveToggle = () => {
+		console.log('reserved');
+		setReserved(!reserved);
+		handleClose();
 	};
 
 	const Header = () => {
@@ -138,6 +149,7 @@ const Calendar = () => {
 					nextMonthDates++;
 				}
 			}
+
 			rows.push(
 				// <Row className="week" key={row}>
 				// 	{days}
@@ -158,12 +170,37 @@ const Calendar = () => {
 
 	return (
 		<div className="calendar">
-			<h5>Book your appointment</h5>
+			<div className="main-header">
+				Reserve your appointment
+			</div>
 			<Header />
 			<Table className="curMonth-calendar" bordered>
 				<DaysOfWeek />
 				<Cells />
 			</Table>
+			
+			<Modal show={show} onHide={handleClose}>
+				<Modal.Header closeButton>
+					<Modal.Title>Select a time slot</Modal.Title>
+				</Modal.Header>
+
+				<Modal.Body>
+					<TimeSlot />
+				</Modal.Body>
+
+				<Modal.Footer>
+					<Button onClick={handleReserveToggle}>
+						Reserve
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Toast className="toast-success" show={reserved} onClose={handleReserveToggle} delay={3000}>
+				<Toast.Header>
+					<strong className="mr-auto">Reservation</strong>
+				</Toast.Header>
+				<Toast.Body>Successfully reserved</Toast.Body>
+			</Toast>
 		</div>
 	);
 };

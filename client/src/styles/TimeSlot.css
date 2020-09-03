@@ -1,0 +1,17 @@
+.container {
+	text-align: center;
+}
+
+.slot {
+	border: 1px solid #a8dadc;
+	padding: 10px;
+	margin: 12px;
+	cursor: pointer;
+	border-radius: 15px;
+}
+
+.activeSlot {
+	color: white;
+	background-color: #1d3557;
+}
+
