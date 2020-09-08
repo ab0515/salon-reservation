@@ -4,7 +4,7 @@ import 'react-bootstrap/Modal';
 import { Table } from 'react-bootstrap';
 
 const TimeSlot = ({handleSelected}) => {
-	const [slots, setSlots] = useState([
+	const slots = [
 		'10:00 AM',
 		'11:00 AM',
 		'12:00 PM',
@@ -15,14 +15,14 @@ const TimeSlot = ({handleSelected}) => {
 		'5:00 PM',
 		'6:00 PM',
 		'7:00 PM'
-	]);
+	];
 
 	const [activeLink, setActiveLink] = useState(null);
 
 	const handleClick = id => {
 		// console.log(`Your reservation is on ${selectedDate.monthName} ${selectedDate.date}, ${selectedDate.year}`);
 		setActiveLink(id);
-		handleSelected();
+		handleSelected(slots[id]);
 	};
 
 	const SlotList = () => {

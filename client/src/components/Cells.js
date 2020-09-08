@@ -9,10 +9,6 @@ const Cells = ({curDate, handleCell}) => {
 		return 32 - d.getDate();
 	}
 
-	const clickCell = ({date}) => {
-		console.log(date);
-	};
-
 	const Rows = () => {
 		const rows = [];
 		let dates = [];
@@ -28,7 +24,7 @@ const Cells = ({curDate, handleCell}) => {
 
 			for (let i=0; i<firstDay; i++) {
 				dates.push(
-					<td className={`cell disabledCell`} key={`prev-${i}`} dsiabled>
+					<td className={`cell disabledCell`} key={`prev-${i}`} disabled>
 						{prevNdays - (firstDay-i-1)}
 					</td>
 				);
@@ -41,11 +37,16 @@ const Cells = ({curDate, handleCell}) => {
 
 		for (let i=0; i<6; i++) {
 			for (let j=dates.length; j<7; j++) {
+				let dateObj = {
+					'date': date,
+					'year': curDate.year, 
+					'month': curDate.month
+				};
 				if (date <= nDays) {
 					dates.push(
 						<td className={`cell ${curDate.date.getDate() > date ? 'pastDateCell' : 'activeCell'} ${today.getMonth() === curDate.month && today.getDate() === date ? 'today' : ''}`}
 							key={date}
-							onClick={() => clickCell(date)}
+							onClick={() => handleCell(dateObj)}
 						>
 							{date}
 						</td>
