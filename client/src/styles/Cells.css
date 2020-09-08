@@ -1,0 +1,38 @@
+th, td {
+	text-align: right;
+}
+
+table > tbody > tr > td {
+	height: 90px;
+}
+
+.disabledCell span {
+	padding-right: 5px;
+}
+
+.cell {
+	padding: 12px;
+	cursor: pointer;
+}
+
+.disabledCell {
+	color: gray;
+	cursor: default;
+}
+
+.pastDateCell {
+	background-color: lightgray;
+	cursor: not-allowed;
+}
+
+.today {
+	background-color: #e9c46a;
+	font-weight: bold;
+}
+
+.days-column {
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+	padding: 12px;
+	margin-top: 20px;
+}

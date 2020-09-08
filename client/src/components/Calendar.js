@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Calendar.css';
+import Cells from './Cells';
 import TimeSlot from './TimeSlot';
-import { Row, Col, Container, Table } from 'react-bootstrap';
-import { Button, Modal, Toast } from 'react-bootstrap';
+
+import { Button, Table, Modal } from 'react-bootstrap';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Calendar = () => {
@@ -13,48 +14,17 @@ const Calendar = () => {
 	});
 
 	const [show, setShow] = useState(false);
-	const [reserved, setReserved] = useState(false);
-
-	const handleNextMonth = () => {
-		setCurDate({
-			date: new Date(curDate.year, curDate.month+1),
-			month: new Date(curDate.year, curDate.month+1).getMonth(),
-			year: new Date(curDate.year, curDate.month+1).getFullYear()
-		});
-	};
-
-	const handlePrevMonth = () => {
-		setCurDate({
-			date: new Date(curDate.year, curDate.month-1),
-			month: new Date(curDate.year, curDate.month-1).getMonth(),
-			year: new Date(curDate.year, curDate.month-1).getFullYear()
-		});
-	};
-
-	const handleCell = () => {
-		setShow(true);
-	};
-
-	const handleClose = () => {
-		setShow(false);
-	};
-
-	const handleReserveToggle = () => {
-		console.log('reserved');
-		setReserved(!reserved);
-		handleClose();
-	};
+	const [timeSelected, setTimeSelected] = useState(false);
 
 	const Header = () => {
 		let monthName = curDate.date.toLocaleString('default', { month: 'long' });
-
 		return (
 			<div className="calendar-header">
-				<Button variant="no-border" onClick={handlePrevMonth}><MdKeyboardArrowLeft /></Button>
+				<Button variant="no-border"><MdKeyboardArrowLeft /></Button>
 				<div>{curDate.year} {monthName}</div>
-				<Button variant="no-border" onClick={handleNextMonth}><MdKeyboardArrowRight /></Button>
+				<Button variant="no-border"><MdKeyboardArrowRight /></Button>
 			</div>
-		)
+		);
 	};
 
 	const DaysOfWeek = () => {
@@ -63,110 +33,35 @@ const Calendar = () => {
 
 		for (let i=0; i<7; i++) {
 			daysEl.push(
-				// <Col className="days-column" key={i}>
-				// 	{days[i].toUpperCase()}
-				// </Col>
-				<th className="days-column" key={i}>
+				<th key={i} className="days-column">
 					{days[i].toUpperCase()}
 				</th>
 			);
 		}
+
 		return (
-			// <Container>
-			// 	<Row className="days-row">
-			// 		{daysEl}
-			// 	</Row>
-			// </Container>
 			<thead>
-				<tr>
-					{daysEl}
-				</tr>
+				<tr>{daysEl}</tr>
 			</thead>
 		);
 	};
 
-	const daysInMonth = (year, month) => {
-		let d = new Date(year, month, 32);
-		return 32 - d.getDate();
-	}
+	const handleCell = ({date}) => {
+		console.log(date);
+		setShow(true);
+	};
 
-	const Cells = () => {
-		const rows = [];
-		let nDays = daysInMonth(curDate.year, curDate.month)	// # of days in the current month
+	const handleClose = () => {
+		setShow(false);
+	};
 
-		let d2 = new Date(curDate.year, curDate.month);
-		let firstDay = d2.getDay();		// 1st day of the current month
+	const handleSelected = () =>{
+		setTimeSelected(!timeSelected);
+	};
 
-		let days = [];
-
-		if (firstDay > 0) {
-			let prevMonth = curDate.month === 0 ? 11 : curDate.month - 1;
-			let prevYear = curDate.month === 0 ? curDate.year - 1 : curDate.year;
-
-			let prevNDays = daysInMonth(prevYear, prevMonth);
-			
-			for (let i=0; i<firstDay; i++) {
-				days.push(
-					// <Col className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
-					// 	{prevNDays - (firstDay-1-i)}
-					// </Col>
-					<td className={`cell disabledCell`} key={`prev-${i}`} aria-disabled>
-						{prevNDays - (firstDay-1-i)}
-					</td>
-				);
-			}
-		}
-
-		let date = 1;
-		let row = 0;
-		let nextMonthDates = 1;
-
-		for (let i=0; i<6; i++) {
-			for (let j=days.length; j<7; j++) {
-				if (date <= nDays) {
-					days.push(
-						// <Col className={`cell activeCell`} key={date}>
-						// 	{date}
-						// </Col>
-						<td className={`cell ${curDate.date.getDate() > date ? 'pastDateCell' : 'activeCell'} ${curDate.date.getDate() === date ? 'today' : ''}`} 
-							key={date}
-							onClick={handleCell}
-						>
-							{date}
-						</td>
-					);
-					date++;
-				} else {
-					let nextMonth = new Date(curDate.year, curDate.month+1);
-					days.push(
-						// <Col className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
-						// 	<span>{nextMonthDates === 1 ? nextMonth.toLocaleString('default', { month: 'short' }) : ''}</span> {nextMonthDates}
-						// </Col>
-						<td className={`cell disabledCell`} key={`nextMonth-${nextMonthDates}`} aria-disabled>
-							<span>{nextMonthDates === 1 ? nextMonth.toLocaleString('default', { month: 'short' }) : ''}</span> {nextMonthDates}
-						</td>
-					);
-					nextMonthDates++;
-				}
-			}
-
-			rows.push(
-				// <Row className="week" key={row}>
-				// 	{days}
-				// </Row>
-
-				<tr key={row}>
-					{days}
-				</tr>
-			);
-			row++;
-			days = [];
-		}
-
-		// return <Container className="body">{rows}</Container>;
-		return <tbody>{rows}</tbody>;
-	}
-
+	const handleReserve = () => {
+		handleClose();
+	};
 
 	return (
 		<div className="calendar">
@@ -174,33 +69,24 @@ const Calendar = () => {
 				Reserve your appointment
 			</div>
 			<Header />
-			<Table className="curMonth-calendar" bordered>
+			<Table className="calendar__curMonth" bordered>
 				<DaysOfWeek />
-				<Cells />
+				<Cells curDate={curDate} handleCell={handleCell} />
 			</Table>
-			
+
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title>Select a time slot</Modal.Title>
 				</Modal.Header>
 
 				<Modal.Body>
-					<TimeSlot />
+					<TimeSlot handleSelected={handleSelected} />
 				</Modal.Body>
 
 				<Modal.Footer>
-					<Button onClick={handleReserveToggle}>
-						Reserve
-					</Button>
+					<Button disabled={!timeSelected} onClick={handleReserve}>Reserve</Button>
 				</Modal.Footer>
 			</Modal>
-
-			<Toast className="toast-success" show={reserved} onClose={handleReserveToggle} delay={3000}>
-				<Toast.Header>
-					<strong className="mr-auto">Reservation</strong>
-				</Toast.Header>
-				<Toast.Body>Successfully reserved</Toast.Body>
-			</Toast>
 		</div>
 	);
 };

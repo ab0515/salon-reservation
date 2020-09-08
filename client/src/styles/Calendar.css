@@ -19,18 +19,6 @@
 	border-bottom: 1px solid lightgray;
 }
 
-.days-row {
-	display: flex;
-	justify-content: center;
-}
-
-.days-column {
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
-	padding: 12px;
-	margin-top: 20px;
-}
-
 .body {
 	display: flex;
 	flex-direction: column;
@@ -38,56 +26,13 @@
 	align-content: center;
 }
 
-.week {
-	display: inline-flex;
-}
-
-.cell {
-	padding: 12px;
-	cursor: pointer;
-}
-
-.disabledCell {
-	color: gray;
-	cursor: default;
-}
-
 .btn-no-border {
 	color: #000;
 
 }
 
-.disabledCell span {
-	padding-right: 5px;
-}
-
-th, td {
-	text-align: right;
-}
-
-table > tbody > tr > td {
-	height: 90px;
-}
-
-table.curMonth-calendar {
+table.calendar__curMonth {
 	table-layout: fixed;
-}
-
-.today {
-	background-color: lightsalmon;
-	font-weight: bold;
-}
-
-.pastDateCell {
-	background-color: lightgray;
-	cursor: not-allowed;
-}
-
-.todayMark {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	border: 1px solid red;
 }
 
 .toast-success {
